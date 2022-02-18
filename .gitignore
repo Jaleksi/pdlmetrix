@@ -5,3 +5,4 @@ __pycache__/
 instance/
 .webassets-cache
 env/
+data.db
