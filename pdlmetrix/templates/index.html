@@ -17,6 +17,7 @@
         <th>win%</th>
         <th>rating by rounds</th>
         <th>rounds win%</th>
+        <th>last 5</th>
         {% for player in players %}
             <tr>
                 <td>{{ player.name }}</td>
@@ -24,6 +25,15 @@
                 <td>{{ player.win_perc }}</td>
                 <td>{{ player.rounds_rating }}</td>
                 <td>{{ player.round_win_perc }}</td>
+                <td>
+                {% for result in player.last_games %}
+                    {% if result %}
+                        <span style="color:green; font-weight:bold;">+</span>
+                    {% else %}
+                        <span style="color:red; font-weigth:bold;">-</span>
+                    {% endif %}
+                {% endfor %}
+                </td>
             </tr>
         {% endfor %}
     </table>
@@ -53,6 +63,8 @@
             </tr>
         {% endfor %}
     </table>
+    <br><br>
+    <a href="/admin">admin</a>
 </body>
 
 </html>

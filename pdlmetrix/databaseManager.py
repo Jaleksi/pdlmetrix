@@ -201,6 +201,7 @@ def get_player_stats(player: Player) -> dict:
         'total_rounds': 0,
         'win_perc': 0,
         'round_win_perc': 0,
+        'last_5_games': [],
     }
 
     player_games = get_games_by_player(player)
@@ -218,9 +219,14 @@ def get_player_stats(player: Player) -> dict:
         if team1_won:
             stats['won_games'] += int(player_in_team1)
             stats['lost_games'] += int(not player_in_team1)
+            stats['last_5_games'].append(player_in_team1)
         else:
             stats['won_games'] += int(not player_in_team1)
             stats['lost_games'] += int(player_in_team1)
+            stats['last_5_games'].append(not player_in_team1)
+
+        if len(stats['last_5_games']) > 5:
+            stats['last_5_games'].pop(0)
 
     try:
         stats['win_perc'] = stats['won_games'] / stats['total_games'] * 100
@@ -257,6 +263,7 @@ def games_table_data() -> dict:
                 player.id,
                 game.id
             )
+
             game_data['players'].append({
                 'name': player.name,
                 'rating_diff': f'{player_history_entry.rating_diff:+g}',
@@ -279,7 +286,8 @@ def players_table_data() -> dict:
             'rating': player.rating,
             'rounds_rating': player.rating_by_rounds,
             'win_perc': int(player_stats['win_perc']),
-            'round_win_perc': int(player_stats['round_win_perc'])
+            'round_win_perc': int(player_stats['round_win_perc']),
+            'last_games': player_stats['last_5_games'],
         })
 
     return table_data

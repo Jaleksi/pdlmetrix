@@ -19,6 +19,7 @@
         </div>
         <input type="submit" value="add player">
     </form>
+    <hr>
     <h2>new result</h2>
     <form method="POST" action="/new_game">
         <div>
@@ -54,6 +55,7 @@
         </div>
         <input type="submit" value="add game">
     </form>
+    <hr>
     <h2>remove games</h2>
     <table id="gamesTable">
         {% for game in games %}
@@ -71,6 +73,7 @@
             </tr>
         {% endfor %}
     </table>
+    <hr>
     <h2>games backup</h2>
         <form method="GET" action="/download_games">
             <button type="submit">download games backup text file</button>
@@ -79,7 +82,9 @@
             <input type="file" name="backup_file">
             <button type="submit">load games from backup</button>
         </form>
-        
+    <hr>
+    <br><br>
+    <a href="/">back</a> 
 </body>
 
 </html>
