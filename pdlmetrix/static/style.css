@@ -1,0 +1,21 @@
+body {
+    text-align: center;
+    font-family: monospace;
+}
+
+td, th {
+    border: 1px solid black;
+}
+
+#playersTable {
+    width: 90%;
+    margin: auto;
+    border-collapse: collapse;
+}
+
+#gamesTable {
+    width: 90%;
+    margin: auto;
+    margin-top: 1em;
+    border-collapse: collapse;
+}

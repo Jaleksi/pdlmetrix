@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8" />
+  <title>PADEL_METRIX</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <link rel="shortcut icon" href="" type="image/x-icon" />
+  <link rel="stylesheet" href="../static/style.css">
+</head>
+
+<body>
+    <h1>ADMIN PANEL</h1>
+    <h2>new player</h2>
+    <form method="POST" action="/new_player">
+        <div>
+            <label for="pname">Name:</label>
+            <input type="text" id="pname" name="pname">
+        </div>
+        <input type="submit" value="add player">
+    </form>
+    <h2>new result</h2>
+    <form method="POST" action="/new_game">
+        <div>
+            <label>Team1 players:</label>
+            <select name="t1p1" id="t1p1">
+                {% for player in players %}
+                    <option value={{ player.id }}>{{ player.name }}</option>
+                {% endfor %}
+            </select>
+            <select name="t1p2" id="t1p2">
+                {% for player in players %}
+                    <option value={{ player.id }}>{{ player.name }}</option>
+                {% endfor %}
+            </select>
+            <br>
+            <label>Team1 score:</label>
+            <input type="number" name="t1score" min="0" max="6"/>
+        </div>
+        <div>
+            <label>Team2 players:</label>
+            <select name="t2p1" id="t2p1">
+                {% for player in players %}
+                    <option value={{ player.id }}>{{ player.name }}</option>
+                {% endfor %}
+            </select>
+            <select name="t2p2" id="t2p2">
+                {% for player in players %}
+                    <option value={{ player.id }}>{{ player.name }}</option>
+                {% endfor %}
+            </select><br>
+            <label>Team2 score:</label>
+            <input type="number" name="t2score" min="0" max="6"/>
+        </div>
+        <input type="submit" value="add game">
+    </form>
+    <h2>remove games</h2>
+    <table id="gamesTable">
+        {% for game in games %}
+            <tr>
+                <td>{{ game.datetime }}</td>
+                <td>{{ game.players[0].name }}/{{ game.players[1].name }}</td>
+                <td>{{ game.team1score }}</td>
+                <td>{{ game.team2score }}</td>
+                <td>{{ game.players[2].name }}/{{ game.players[3].name }}</td>
+                <td>
+                    <form method="POST" action="/delete_game">
+                        <button type="submit" name="game_id" value={{ game.id }}>DELETE</button>
+                    </form>
+                </td>
+            </tr>
+        {% endfor %}
+    </table>
+    <h2>games backup</h2>
+        <form method="GET" action="/download_games">
+            <button type="submit">download games backup text file</button>
+        </form>
+        <form method="POST" action="/load_from_backup" enctype="multipart/form-data">
+            <input type="file" name="backup_file">
+            <button type="submit">load games from backup</button>
+        </form>
+        
+</body>
+
+</html>

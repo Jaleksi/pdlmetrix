@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <title>PADEL_METRIX</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <link rel="shortcut icon" href="" type="image/x-icon">
+  <link rel="stylesheet" href="../static/style.css">
+</head>
+
+<body>
+    <h1>PADEL_METRIX</h1>
+    <table id="playersTable">
+        <th></th>
+        <th>rating</th>
+        <th>win%</th>
+        <th>rating by rounds</th>
+        <th>rounds win%</th>
+        {% for player in players %}
+            <tr>
+                <td>{{ player.name }}</td>
+                <td>{{ player.rating }}</td>
+                <td>{{ player.win_perc }}</td>
+                <td>{{ player.rounds_rating }}</td>
+                <td>{{ player.round_win_perc }}</td>
+            </tr>
+        {% endfor %}
+    </table>
+    <table id="gamesTable">
+        {% for game in games %}
+            <tr>
+                <td>{{ game.datetime }}</td>
+                <td>
+                    {{ game.players[0].name }}
+                    ({{game.players[0].rating_diff}} / {{game.players[0].rounds_rating_diff}})<br>
+                    {{ game.players[1].name }}
+                    ({{game.players[1].rating_diff}} / {{game.players[1].rounds_rating_diff}})
+                </td>
+                {% if game.team1score > game.team2score %}
+                    <td><b>{{ game.team1score }}</b></td>
+                    <td>{{ game.team2score }}</td>
+                {% else %}
+                    <td>{{ game.team1score }}</b></td>
+                    <td><b>{{ game.team2score }}</b></td>
+                {% endif %}
+                <td>
+                    {{ game.players[2].name }}
+                    ({{game.players[2].rating_diff}} / {{game.players[2].rounds_rating_diff}})<br>
+                    {{ game.players[3].name }}
+                    ({{game.players[3].rating_diff}} / {{game.players[3].rounds_rating_diff}})
+                </td>
+            </tr>
+        {% endfor %}
+    </table>
+</body>
+
+</html>
