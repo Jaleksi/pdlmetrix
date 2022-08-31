@@ -164,8 +164,12 @@ def get_player_by_name(player_name: str) -> Union[Player, None]:
     return Player.query.filter(Player.name == player_name).first()
 
 
-def get_history_entries_by_game_id(game_id: int) -> Union[Game, None]:
+def get_history_entries_by_game_id(game_id: int) -> Union[List[RatingHistory], None]:
     return RatingHistory.query.filter(RatingHistory.game_id == game_id)
+
+
+def get_history_entries_by_player_id(player_id: int) -> Union[List[RatingHistory], None]:
+    return RatingHistory.query.filter(RatingHistory.player_id == player_id)
 
 
 def get_history_entry_by_player_and_game(
@@ -188,8 +192,120 @@ def get_all_rating_history() -> List[RatingHistory]:
     return RatingHistory.query.all()
 
 
+def get_players_in_game(game: Game) -> list:
+    # returns players in game as nested list with index 0 being team 1
+    team1 = [get_player_by_id(int(_id)) for _id in game.team1.split(',')]
+    team2 = [get_player_by_id(int(_id)) for _id in game.team2.split(',')]
+    return [team1, team2]
+
+
+def player_game_result(player: Player, game: Game) -> int:
+    # Returns result for given player for the given match.
+    # 0=loss, 1=tie, 2=win
+    t1 = [get_player_by_id(i) for i in game.team1]
+    t2 = [get_player_by_id(i) for i in game.team2]
+    assert player in t1 + t2, 'Player did not play in given game'
+
+    t1s, t2s = [int(s) for s in game.score.split(',')]
+    if t1s == t2s:
+        return 1
+    if t1s > t2s:
+        return 2 if player in t1 else 0
+    return 2 if player in t2 else 0
+
+
 def get_games_by_player(player: Player) -> List[Game]:
+    # todo: refactor to take into account +10 players
     return Game.query.filter((Game.team1 + Game.team2).contains(str(player.id)))
+
+
+def get_player_rank(player: Player) -> int:
+    players = get_all_players()
+    rank_sum = lambda p: p.rating + p.rating_by_rounds
+    sorted_by_rank = sorted(players, key=rank_sum, reverse=True)
+    return sorted_by_rank.index(player) + 1
+
+
+def get_player_partner_enemy(player: Player) -> dict:
+    # returns two other players in dict which the given
+    # player has best win rate with and worst win rate against.
+    all_games = get_games_by_player(player)
+    others_stats = {}
+
+    for game in all_games:
+        team1, team2 = get_players_in_game(game)
+        t1score, t2score = [int(s) for s in game.score.split(',')]
+        team1_won = t1score > t2score
+        player_in_team1 = player in team1
+
+
+        for other_player in team1 + team2:
+            if other_player == player:
+                continue
+            played_as_a_team = player_in_team1 == (other_player in team1)
+            if other_player not in others_stats:
+                others_stats[other_player] = {
+                    'rounds_as_partner': 0,
+                    'wins_as_partner': 0,
+                    'rounds_against': 0,
+                    'wins_against': 0
+                }
+            if played_as_a_team:
+                others_stats[other_player]['rounds_as_partner'] += t1score + t2score
+                won_rounds = t1score if player_in_team1 else t2score
+                others_stats[other_player]['wins_as_partner'] += won_rounds
+            else:
+                others_stats[other_player]['rounds_against'] += t1score + t2score
+                won_rounds = t1score if player_in_team1 else t2score
+                others_stats[other_player]['wins_against'] += won_rounds
+
+    best_partner = None
+    best_partner_win_ratio = 0
+    worst_opponent = None
+    worst_opponent_win_ratio = 100
+
+    for other, stats in others_stats.items():
+        try:
+            win_ratio_as_partner = stats['wins_as_partner'] / stats['rounds_as_partner']
+            if win_ratio_as_partner > best_partner_win_ratio:
+                best_partner_win_ratio = win_ratio_as_partner
+                best_partner = other
+        except ZeroDivisionError:
+            pass
+
+        try:
+            win_ratio_against = stats['wins_against'] / stats['rounds_against']
+            if win_ratio_against < worst_opponent_win_ratio:
+                worst_opponent_win_ratio = win_ratio_against
+                worst_opponent = other
+        except ZeroDivisionError:
+            pass
+
+
+    return {
+        'best_partner': best_partner,
+        'best_partner_win_ratio': best_partner_win_ratio * 100,
+        'worst_opponent': worst_opponent,
+        'worst_opponent_win_ratio': worst_opponent_win_ratio * 100
+    }
+
+
+def get_games_by_player_formatted(player: Player) -> List[dict]:
+    games = sorted(get_games_by_player(player), key=lambda g: int(g.datetime), reverse=True)
+    formatted_games = []
+
+    for game in games:
+        team1_names = [get_player_by_id(int(i)).name for i in game.team1.split(',')]
+        team2_names = [get_player_by_id(int(i)).name for i in game.team2.split(',')]
+        formatted_game = {
+            'team1': ' / '.join(team1_names),
+            'team2': ' / '.join(team2_names),
+            'result': player_game_result(player, game),
+            'score': game.score.replace(',', '-'),
+        }
+        formatted_games.append(formatted_game)
+    return formatted_games
+
 
 def get_player_stats(player: Player) -> dict:
     stats = {
@@ -202,7 +318,16 @@ def get_player_stats(player: Player) -> dict:
         'win_perc': 0,
         'round_win_perc': 0,
         'last_5_games': [],
+        'rank': get_player_rank(player),
+        'elo_history': [],
+        'points_elo_history': [],
     }
+
+    player_history = get_history_entries_by_player_id(player.id)
+    history_ordered = sorted(player_history, key=lambda e: int(e.datetime), reverse=True)
+    for entry in player_history:
+        stats['elo_history'].append(entry.rating)
+        stats['points_elo_history'].append(entry.rating_by_rounds)
 
     player_games = get_games_by_player(player)
 

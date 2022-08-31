@@ -1,6 +1,6 @@
 import time
 from flask import current_app as app
-from flask import render_template, request, redirect, url_for, Response
+from flask import render_template, request, redirect, url_for, Response, abort
 from .elo_utils import modified_elo
 from . import databaseManager as DbManager
 from . import auth
@@ -19,6 +19,19 @@ def index():
         games=DbManager.games_table_data(),
     )
 
+
+@app.route('/player/<player_name>')
+def player(player_name):
+    player = DbManager.get_player_by_name(player_name)
+    if not player:
+        abort(404)
+    return render_template(
+        'player.html',
+        player=player,
+        data=DbManager.get_player_stats(player),
+        games=DbManager.get_games_by_player_formatted(player),
+        others=DbManager.get_player_partner_enemy(player),
+    )
 
 @app.route('/admin')
 @auth.login_required

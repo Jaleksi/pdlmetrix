@@ -7,6 +7,5 @@ http-basic-auth==1.2.0
 itsdangerous==2.0.1
 Jinja2==3.0.3
 MarkupSafe==2.0.1
-pkg_resources==0.0.0
 SQLAlchemy==1.4.31
 Werkzeug==2.0.2

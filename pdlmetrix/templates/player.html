@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ player.name.upper() }}</title>
+    <link rel="stylesheet" href="../static/style.css">
+    <script type="text/javascript">
+      PLAYER_DATA = {{ data|tojson }};
+    </script>
+  </head>
+  <body onload="drawGraphs()">
+    <div id="headerGrid">
+      <div id="profileImageDiv">
+        <img id="profileImage" src="{{ 'https://avatars.dicebear.com/api/miniavs/' + player.name + '.svg' }}">
+      </div>
+      <div id="profileRankAndNameDiv" class="centeredParaInCell">
+        <a class="bigText" >{{ player.name.upper() }}</a><br>
+        <a class="medText">Rank: {{ data.rank }}</a>
+      </div>
+    </div>
+    <div id="statsGrid">
+      <div id="ratingTextDiv" class="centeredParaInCell">
+        <a class="smallText">Rating</a>
+      </div>
+      <div id="userMatchRatingDiv" class="centeredParaInCell">
+        <a class="smallText">{{ player.rating }}</a>
+      </div>
+      <div id="userPointsRatingDiv" class="centeredParaInCell">
+        <a class="smallText">{{ player.rating_by_rounds }}</a>
+      </div>
+      <div id="winRatioTextDiv" class="centeredParaInCell">
+        <a class="smallText">Win ratio</a>
+      </div>
+      <div id="totalTextDiv" class="centeredParaInCell">
+        <a class="smallText">Total</a>
+      </div>
+      <div id="userMatchTotalDiv" class="centeredParaInCell">
+        <a class="smallText">{{ data.total_games }}</a>
+      </div>
+      <div id="userPointsTotalDiv" class="centeredParaInCell">
+        <a class="smallText">{{ data.total_rounds }}</a>
+      </div>
+      <div id="matchesRatingDiv" class="centeredParaInCell">
+        <a class="medText">Matches</a>
+      </div>
+      <div id="pointsRatingDiv" class="centeredParaInCell">
+        <a class="medText">Points</a>
+      </div>
+      <div id="matchesWinText" class="centeredParaInCell">
+        <a class="smallText">{{ data.win_perc|int }}%</a>
+      </div>
+      <div id="pointsWinText" class="centeredParaInCell">
+        <a class="smallText">{{ data.round_win_perc|int }}%</a>
+      </div>
+      <div id="matchesGraphDiv">
+        <canvas class="canvasDims" id="matchesWinPercentageCanvas"></canvas>
+      </div>
+      <div id="pointsGraphDiv">
+        <canvas class="canvasDims" id="pointsWinPercentageCanvas"></canvas>
+      </div>
+      <div id="eloGraphDiv">
+        <canvas class="canvasDims" id="eloGraphCanvas"></canvas>
+      </div>
+
+    </div>
+    <div id="otherInfoGrid">
+
+      <div id="topPartnerDiv" class="centeredParaInCell">
+        <a class="medText">Top partner</a><br>
+        <a class="smallText">Win ratio: {{ others.best_partner_win_ratio|int }}%</a>
+        <img class="otherImage" src="{{ 'https://avatars.dicebear.com/api/miniavs/' + others.best_partner.name + '.svg' }}"><br>
+        <a class="smallText" href="{{ '/player/' + others.best_partner.name }}">{{ others.best_partner.name.upper() }}</a>
+      </div>
+      <div id="worstOpponentDiv" class="centeredParaInCell">
+        <a class="medText">Worst opponent</a><br>
+        <a class="smallText">Win ratio: {{ others.worst_opponent_win_ratio|int }}%</a>
+        <img class="otherImage" src="{{ 'https://avatars.dicebear.com/api/miniavs/' + others.worst_opponent.name + '.svg' }}"><br>
+        <a class="smallText" href="{{ '/player/' + others.worst_opponent.name }}">{{ others.worst_opponent.name.upper() }}</a>
+      </div>
+    </div>
+
+    <table id="playerGamesTable">
+      {% for game in games %}
+        <tr class="playerGameTableItem">
+          <td>{{ game.team1 }}</td>
+          {% if game.result == 2 %}
+            <td class="winGame">{{ game.score }}</td>
+          {% elif game.result == 0 %}
+            <td class="loseGame">{{ game.score }}</td>
+          {% else %}
+            <td>{{ game.score }}</td>
+          {% endif %}
+          <td>{{ game.team2 }}</td>
+        </tr>
+      {% endfor %}
+    </table>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="../static/playerProfile.js"></script>
+  </body>
+</html>

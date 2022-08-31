@@ -23,9 +23,9 @@ class RatingHistory(db.Model):
 class Game(db.Model):
     __tablename__ = 'padelGames'
     id = db.Column(db.Integer, primary_key=True)
-    team1 = db.Column(db.String)
-    team2 = db.Column(db.String)
-    score = db.Column(db.String)
+    team1 = db.Column(db.String) # "3,2"
+    team2 = db.Column(db.String) # "0,1"
+    score = db.Column(db.String) # "6,0" team1points, team2points
     datetime = db.Column(db.String)
 
 

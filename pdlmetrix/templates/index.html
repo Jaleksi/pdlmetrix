@@ -20,7 +20,7 @@
         <th>last 5</th>
         {% for player in players %}
             <tr>
-                <td>{{ player.name }}</td>
+                <td><a href="{{ '/player/' + player.name }}">{{ player.name }}</a></td>
                 <td>{{ player.rating }}</td>
                 <td>{{ player.win_perc }}</td>
                 <td>{{ player.rounds_rating }}</td>

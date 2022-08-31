@@ -19,3 +19,202 @@ td, th {
     margin-top: 1em;
     border-collapse: collapse;
 }
+
+.smallText {
+  font-size: 3vw;
+}
+
+.medText {
+  font-size: 4vw;
+}
+
+.bigText {
+  font-size: 8vw;
+}
+
+#headerGrid {
+  background: #faedcd;
+  display: grid;
+  height: 24vw;
+  grid-template-columns: repeat(3, 1fr);
+  grid-template-rows: 1fr;
+  margin-bottom: 3vh;
+  margin-top: -1vh;
+  margin-left: -1vh;
+  margin-right: -1vh;
+}
+
+#profileImageDiv {
+  margin: auto;
+  background: #fff;
+  border-radius: 50%;
+  grid-column-start: 1;
+  grid-row-start: 1;
+  text-align: center;
+  width: 20vw;
+  height: 20vw;
+}
+
+#profileImage {
+  height: 80%;
+  width: 80%;
+}
+
+.centeredParaInCell {
+  margin: auto;
+  text-align: center;
+}
+
+#profileRankAndNameDiv {
+  grid-column-start: 2;
+  grid-column-end: 3;
+  grid-row-start: 1;
+}
+
+#statsGrid {
+  width: 90%;
+  margin: auto;
+  padding-top: 2vh;
+  padding-bottom: 2vh;
+  border-radius: 1vh;
+  background: #faedcd;
+  display: grid;
+  grid-template-columns: 1fr 0.5fr 1fr;
+  grid-template-rows: auto;
+  grid-gap: 1vh;
+}
+
+#ratingTextDiv {
+  grid-column-start: 2;
+  grid-row-start: 2;
+}
+
+#totalTextDiv {
+  grid-column-start: 2;
+  grid-row-start: 3;
+}
+
+#winRatioTextDiv {
+  grid-column-start: 2;
+  grid-row-start: 4;
+}
+
+#matchesRatingDiv {
+  grid-column-start: 1;
+  grid-row-start: 1;
+}
+
+#pointsRatingDiv {
+  grid-column-start: 3;
+  grid-row-start: 1;
+}
+
+#matchesGraphDiv {
+  grid-column-start: 1;
+  grid-row-start: 4;
+}
+
+#pointsGraphDiv {
+  grid-column-start: 3;
+  grid-row-start: 4;
+}
+
+#userMatchRatingDiv {
+  grid-column-start: 1;
+  grid-row-start: 2;
+}
+
+#matchesWinText {
+  grid-column-start: 1;
+  grid-row-start: 4;
+}
+
+#pointsWinText {
+  grid-column-start: 3;
+  grid-row-start: 4;
+}
+
+#userPointsRatingDiv {
+  grid-column-start: 3;
+  grid-row-start: 2;
+}
+
+#userMatchTotalDiv {
+  grid-column-start: 1;
+  grid-row-start: 3;
+}
+
+#userPointsTotalDiv {
+  grid-column-start: 3;
+  grid-row-start: 3;
+}
+
+#eloGraphDiv {
+  margin: auto;
+  grid-column-start: 1;
+  grid-column-end: 4;
+  grid-row-start: 5;
+  height: 100px !important;
+  width: 90% !important;
+}
+
+#otherInfoGrid {
+  background: #faedcd;
+  margin: auto;
+  margin-top: 2vh;
+  width: 90%;
+  border-radius: 1vh;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: 1fr;
+}
+
+#topPartnerDiv {
+  width: 100%;
+  height: 100%;
+  grid-column-start: 1;
+  grid-row-start: 1;
+  margin-top: 2vh;
+}
+
+#worstOpponentDiv {
+  width: 100%;
+  height: 100%;
+  grid-column-start: 2;
+  grid-row-start: 1;
+  margin-top: 2vh;
+}
+
+#playerGamesTable {
+  border-radius: 1vh;
+  background: #faedcd;
+  width: 90%;
+  margin: auto;
+  margin-top: 2vh;
+  padding-top: 2vh;
+  padding-bottom: 2vh;
+  text-align: center;
+  border-collapse: separate;
+}
+
+.winGame {
+  background: #cdeac0;
+}
+
+.loseGame {
+  background: #fec3a6;
+}
+
+.playerGameTableItem {
+  border: 0;
+}
+
+.otherImage {
+  width: 50%;
+  height: 50%;
+}
+
+.canvasDims {
+  width: 100%;
+  height: 100%;
+}
